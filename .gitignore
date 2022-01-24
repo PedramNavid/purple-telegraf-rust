@@ -1,0 +1,3 @@
+/target
+.env
+k3s.yaml

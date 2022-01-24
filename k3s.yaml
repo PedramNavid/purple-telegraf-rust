@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: purpleair
+  labels:
+    app: purpleair
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: purpleair
+  template:
+    metadata:
+      labels:
+        app: purpleair
+    spec:
+      containers:
+        - name: purpleair
+          image: pedramnavid/purple-telegraf-rust
+          resources:
+            requests:
+              memory: "1Mi"
+              cpu: "25m"
+            limits:
+              memory: "16Mi"
+              cpu: "100m"
