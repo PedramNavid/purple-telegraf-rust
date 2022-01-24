@@ -221,20 +221,31 @@ fn convert_sensor_data(data: SensorData) -> PurpleAirMetric {
     }
 }
 
-struct Config<'a> {
-    sensor_ids: Vec<&'a str>,
+struct Config {
+    sensor_ids: Vec<String>,
     hostname: String,
 }
 
-fn parse_config() -> Config<'static> {
-    let sensor_ids = env!("SENSOR_IDS", "Please set SENSOR_IDS")
-        .split(",")
-        .collect();
-    let hostname = env!("TELEGRAF_HOST", "Please set TELEGRAF_HOST").to_string();
+fn parse_config() -> Config {
+    let sensor_ids: Vec<String>;
+    match env::var("SENSOR_IDS") {
+        Ok(v) => {
+            sensor_ids = v.split(",").map(|s| s.to_string()).collect();
+        }
+
+        Err(e) => panic!("${} os not set ({})", "SENSOR_IDS", e),
+    }
+    let hostname;
+    match env::var("TELEGRAF_HOST") {
+        Ok(v) => { hostname = v.clone();
+            }
+        Err(e) => panic!("${} os not set ({})", "TELEGRAF_HOST", e),
+
+        }
 
     Config {
-        sensor_ids,
         hostname,
+        sensor_ids,
     }
 }
 
